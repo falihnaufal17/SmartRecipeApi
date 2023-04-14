@@ -12,21 +12,21 @@ exports.create = async (req, res) => {
 
   if (!req.body.fullname || req.body.fullname.length === 0) {
     res.status(400).send({
-      message: "Nama Lengkap harus diisi!"
+      message: "Nama lengkap harus diisi!"
     });
     return;
   }
 
   if (!req.body.username || req.body.username.length === 0) {
     res.status(400).send({
-      message: "Username can not be empty!"
+      message: "Username tidak boleh kosong!"
     });
     return;
   }
 
   if (!req.body.password || req.body.password.length === 0) {
     res.status(400).send({
-      message: "Password can not be empty!"
+      message: "Password tidak boleh kosong!"
     });
     return;
   }
