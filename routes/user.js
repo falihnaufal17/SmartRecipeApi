@@ -9,6 +9,8 @@ module.exports = app => {
 
   // Create a new Tutorial
   router.post("/register", users.create);
+  router.post("/bookmark", bookmarks.create);
+  router.post("/rating", rating.create);
 
   app.use('/api/account', router);
 }

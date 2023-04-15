@@ -1,5 +1,5 @@
 const db = require("../models");
-const Bookmark = db.bookmarks;
+const Rating = db.ratings;
 
 exports.create = async (req, res) => {
     if (!req.body.userId || req.body.userId.length === 0) {
@@ -9,23 +9,30 @@ exports.create = async (req, res) => {
         return;
     }
 
-    if (!req.body.title || req.body.title.length === 0) {
+    if (!req.body.rate || req.body.rate.length === 0) {
         res.status(400).send({
-            message: "Judul harus diisi!"
+            message: "Rating harus diisi!"
         });
         return;
     }
 
+    if (!req.body.review || req.body.review.length === 0) {
+        res.status(400).send({
+            message: "Review harus diisi!"
+        });
+        return;
+    }
 
-    // Create a Bookmark
+    // Create a Rating
     const payload = {
-        userId: req.body.userId,
-        title: req.body.title
-    };
+        userId: req.body.userID,
+        rate: req.body.rate,
+        review: req.body.review
+    }
 
-    // Save Bookmark in the database
+    // Save Rating in the database
     try {
-        const data = await Bookmark.create(payload);
+        const data = await Rating.create(payload);
 
         res.send(data);
     } catch (error) {
