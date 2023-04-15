@@ -19,7 +19,7 @@ exports.create = async (req, res) => {
 
     // Create a Bookmark
     const payload = {
-        userId: req.body.userId,
+        user_id: req.body.userId,
         title: req.body.title
     };
 

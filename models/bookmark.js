@@ -6,13 +6,14 @@ module.exports = (sequelize, Sequelize) => {
             primaryKey: true
         },
         user_id: {
-            type: Sequelize.INTEGER
+            type: Sequelize.INTEGER,
         },
         title: {
             type: Sequelize.STRING
         },
         body: {
-            type: Sequelize.JSON
+            type: Sequelize.JSON,
+            defaultValue: null
         }
     }, {
         tableName: 'bookmarks',

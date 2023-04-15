@@ -25,7 +25,7 @@ exports.create = async (req, res) => {
 
     // Create a Rating
     const payload = {
-        userId: req.body.userID,
+        user_id: req.body.userId,
         rate: req.body.rate,
         review: req.body.review
     }

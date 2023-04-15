@@ -9,7 +9,7 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.INTEGER
         },
         rate: {
-            type: Sequelize.INTEGER
+            type: Sequelize.TINYINT
         },
         review: {
             type: Sequelize.STRING

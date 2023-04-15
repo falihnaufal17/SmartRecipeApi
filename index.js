@@ -11,6 +11,8 @@ app.get("/", (req, res) => {
 });
 
 require("./routes/user")(app);
+require("./routes/bookmark")(app);
+require("./routes/rating")(app);
 
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
