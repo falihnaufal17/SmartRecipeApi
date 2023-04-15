@@ -5,11 +5,14 @@ module.exports = (sequelize, Sequelize) => {
             autoIncrement: true,
             primaryKey: true
         },
-        rating: {
-            type: Sequelize.NUMBER
+        user_id: {
+            type: Sequelize.INTEGER
         },
-        review: {
+        title: {
             type: Sequelize.STRING
+        },
+        body: {
+            type: Sequelize.JSON
         }
     }, {
         tableName: 'bookmarks',

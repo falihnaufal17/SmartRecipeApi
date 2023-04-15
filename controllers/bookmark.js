@@ -2,24 +2,25 @@ const db = require("../models");
 const Bookmark = db.bookmarks;
 
 exports.create = async (req, res) => {
-    if (!req.body.rating || req.body.rating.length === 0) {
+    if (!req.body.userId || req.body.userId.length === 0) {
         res.status(400).send({
-            message: "Rating harus diisi!"
+            message: "User ID harus diisi!"
         });
         return;
     }
 
-    if (!req.body.review || req.body.review.length === 0) {
+    if (!req.body.title || req.body.title.length === 0) {
         res.status(400).send({
-            message: "Review harus diisi!"
+            message: "Judul harus diisi!"
         });
         return;
     }
+
 
     // Create a Bookmark
     const payload = {
-        rating: req.body.rating,
-        review: req.body.review,
+        userId: req.body.userId,
+        title: req.body.title,
     };
 
     // Save Bookmark in the database
