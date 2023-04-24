@@ -1,14 +1,16 @@
-// /register
-// /login
-// /delete-user
-
-module.exports = app => {
+module.exports = (app) => {
   const users = require("../controllers/user.js");
 
   var router = require("express").Router();
 
-  // Create a new Tutorial
+  // Create a new User
   router.post("/register", users.create);
 
-  app.use('/api/account', router);
-}
+  // Login
+  router.get("/login", users.findOne);
+
+  // Delete a User with id
+  router.delete("/delete-user:id", users.delete);
+
+  app.use("/api/account", router);
+};

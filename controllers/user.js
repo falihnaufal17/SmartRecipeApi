@@ -6,34 +6,34 @@ exports.create = async (req, res) => {
   // Validate request
   const existUser = await User.findOne({
     where: {
-      username: req.body.username
-    }
+      username: req.body.username,
+    },
   });
 
   if (!req.body.fullname || req.body.fullname.length === 0) {
     res.status(400).send({
-      message: "Nama lengkap harus diisi!"
+      message: "Nama lengkap harus diisi!",
     });
     return;
   }
 
   if (!req.body.username || req.body.username.length === 0) {
     res.status(400).send({
-      message: "Username tidak boleh kosong!"
+      message: "Username tidak boleh kosong!",
     });
     return;
   }
 
   if (!req.body.password || req.body.password.length === 0) {
     res.status(400).send({
-      message: "Password tidak boleh kosong!"
+      message: "Password tidak boleh kosong!",
     });
     return;
   }
 
   if (existUser) {
     res.status(400).send({
-      message: "Username sudah terdaftar!"
+      message: "Username sudah terdaftar!",
     });
     return;
   }
@@ -42,23 +42,66 @@ exports.create = async (req, res) => {
   const payload = {
     fullname: req.body.fullname,
     username: req.body.username,
-    password: req.body.password
+    password: req.body.password,
   };
 
   // Save User in the database
-
   try {
     const data = await User.create(payload);
 
     res.send(data);
   } catch (error) {
     res.status(500).send({
-      message: error.message || "Some error occurred while creating the User."
+      message: error.message || "Some error occurred while creating the User.",
     });
   }
 };
 
 // Find a single User with an id
-exports.findOne = (req, res) => {
-  
+exports.findOne = async (req, res) => {
+  if (!req.body.username || req.body.username.length === 0) {
+    res.status(400).send({
+      message: "Username tidak boleh kosong!",
+    });
+    return;
+  }
+
+  if (!req.body.password || req.body.password.length === 0) {
+    res.status(400).send({
+      message: "Password tidak boleh kosong!",
+    });
+    return;
+  }
+
+  // Find a User
+  const payload = {
+    username: req.body.username,
+    password: req.body.password,
+  };
+
+  // Find User in the database
+  try {
+    const data = await User.findOne(payload);
+
+    res.send(data);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || "Some error occurred while finding the User.",
+    });
+  }
+};
+
+// Delete a User with the specified id
+exports.delete = async (req, res) => {
+  const id = req.body.id;
+
+  try {
+    const data = await User.delete(id);
+
+    res.send(data);
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || "Some error occurred while deleting the User.",
+    });
+  }
 };
