@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
 require("./routes/user")(app);
 require("./routes/bookmark")(app);
 require("./routes/rating")(app);
+require("./routes/clarifai")(app);
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
