@@ -1,3 +1,8 @@
 /node_modules/
 .env
 *-lock.json
+/assets/images/*.jpg
+/assets/images/*.jpeg
+/assets/images/*.png
+/assets/images/*.svg
+/assets/images/*.webp
