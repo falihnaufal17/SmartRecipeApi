@@ -40,7 +40,7 @@ exports.detector = (req, res) => {
 
       axios.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=3798ef43760f4a10982037daf9a35c40&ingredients=${output.data.concepts[0].name}`)
         .then((spoonacularResponse) => {
-          const data = spoonacularResponse.data.results;
+          const data = spoonacularResponse.data;
           console.log("response Spoon", spoonacularResponse.data)
           return res.status(200).send({
             message: 'Image food detected',
