@@ -55,3 +55,32 @@ exports.detector = (req, res) => {
     }
   );
 }
+
+exports.detail = async (req, res) => {
+  const {id} = req.params
+
+  try {
+    const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const equipmentDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const instructionDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const formattedResponse = {
+      id: recipeDetail?.id,
+      title: recipeDetail?.title,
+      image: recipeDetail?.image,
+      equipments: equipmentDetail?.equipment,
+      ingredients: ingredientsDetail?.ingredients,
+      instructions: instructionDetail
+    }
+
+    return res.status(200).send({
+      message: 'Success get detail recipe',
+      data: formattedResponse
+    })
+  } catch (e) {
+    return res.status(500).send({
+      message: e.response.data,
+      data: null
+    })
+  }
+}

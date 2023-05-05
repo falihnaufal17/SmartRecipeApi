@@ -18,6 +18,7 @@ const clarifai = require('../controllers/clarifai');
 module.exports = (app) => {
 
   router.post('/detect', upload.single('image'), clarifai.detector)
+  router.get('/detail/:id', clarifai.detail)
 
   app.use("/api/clarifai", router);
 }
