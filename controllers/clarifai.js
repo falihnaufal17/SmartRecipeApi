@@ -41,13 +41,16 @@ exports.detector = (req, res) => {
         console.log(region.data.concepts[0].name);
       }
 
-      axios.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=3798ef43760f4a10982037daf9a35c40&ingredients=${ingredients.join(',')}`)
+      axios.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=3798ef43760f4a10982037daf9a35c40&ingredients=${ingredients.join(',')}&number=${100}`)
         .then((spoonacularResponse) => {
-          const data = spoonacularResponse.data;
+          const data = {
+            detectedIngredients: ingredients,
+            data: spoonacularResponse.data
+          };
           console.log("response Spoon", spoonacularResponse.data)
           return res.status(200).send({
             message: 'Image food detected',
-            data: data ?? []
+            data
           })
         }).catch(spoonacularResponseErr => {
           return res.status(500).send({
