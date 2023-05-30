@@ -21,6 +21,5 @@ db.sequelize = sequelize;
 
 db.users = require("./user.js")(sequelize, Sequelize);
 db.bookmarks = require("./bookmark.js")(sequelize, Sequelize);
-db.ratings = require("./rating.js")(sequelize, Sequelize);
 
 module.exports = db;
