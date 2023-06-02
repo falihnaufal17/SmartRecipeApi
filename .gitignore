@@ -1,5 +1,5 @@
 /node_modules/
-.env-sample
+.env
 *-lock.json
 /assets/images/*.jpg
 /assets/images/*.jpeg
