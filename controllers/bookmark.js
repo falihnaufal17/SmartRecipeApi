@@ -1,57 +1,80 @@
+const { default: axios } = require("axios");
+const { getUserByToken } = require("../helpers/utils");
 const db = require("../models");
 const Bookmark = db.bookmarks;
 const Op = db.Sequelize.Op;
 
 // Create and Save a new Bookmark
 exports.create = async (req, res) => {
-  if (!req.body.userId || req.body.userId.length === 0) {
-    res.status(400).send({
-      message: "User ID harus diisi!",
-    });
-    return;
-  }
-
-  if (!req.body.title || req.body.title.length === 0) {
-    res.status(400).send({
-      message: "Judul harus diisi!",
-    });
-    return;
-  }
-
-  // Create a Bookmark
-  const payload = {
-    user_id: req.body.userId,
-    title: req.body.title,
-  };
+  const token = req.headers['authorization'].split(" ")[1];
+  const userByToken = await getUserByToken(token)
+  const {recipeId} = req.body
 
   // Save Bookmark in the database
   try {
+    const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const equipmentDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const instructionDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const formattedResponse = {
+      id: recipeDetail?.id,
+      title: recipeDetail?.title,
+      image: recipeDetail?.image,
+      equipments: equipmentDetail?.equipment,
+      ingredients: ingredientsDetail?.ingredients,
+      instructions: instructionDetail
+    }
+    const payload = {
+      user_id: userByToken.id,
+      title: formattedResponse.title,
+      body: JSON.stringify(formattedResponse)
+    };
+
     const data = await Bookmark.create(payload);
 
-    res.send(data);
+    return res.status(201).send({
+      success: true,
+      message: 'Add to bookmark successfully',
+      data
+    });
   } catch (error) {
-    res.status(500).send({
+    return res.status(500).send({
+      success: false,
       message:
         error.message || "Some error occurred while creating the Bookmark.",
+      data
     });
   }
 };
 
 // Retrieve all Bookmarks/ find by title from the database
-exports.findAll = (req, res) => {
+exports.findAll = async (req, res) => {
   const title = req.query.title;
-  var condition = title ? { title: { [Op.like]: `%${title}%` } } : null;
+  const token = req.headers['authorization'].split(" ")[1];
+  const userByToken = await getUserByToken(token)
+  const condition = {}
 
-  Bookmark.findAll({ where: condition })
-    .then(data => {
-      res.send(data);
+  if (title) {
+    condition.title = { [Op.like]: `%${title}%` }
+  }
+
+  condition.user_id = { [Op.eq]: userByToken.id }
+
+  try {
+    const bookmarks = await Bookmark.findAll({ where: condition })
+
+    return res.status(200).send({
+      success: true,
+      message: 'Success get all bookmarks',
+      data: bookmarks
     })
-    .catch(err => {
-      res.status(500).send({
-        message:
-          err.message || "Some error occurred while retrieving bookmarks."
-      });
-    });
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error,
+      data: null
+    })
+  }
 };
 
 // Find a single Bookmark with an id

@@ -7,7 +7,7 @@ module.exports = (app) => {
   router.post("/register", users.create);
 
   // Login
-  router.get("/login", users.findOne);
+  router.post("/login", users.findOne);
 
   // Delete a User with id
   router.delete("/delete-user:id", users.delete);

@@ -1,8 +1,11 @@
 const db = require("../models");
+const bcrypt = require("bcrypt");
 const User = db.users;
+const jwt = require('jsonwebtoken');
 
 // Create and Save a new User
 exports.create = async (req, res) => {
+  const salt = await bcrypt.genSalt(10);
   // Validate request
   const existUser = await User.findOne({
     where: {
@@ -42,7 +45,7 @@ exports.create = async (req, res) => {
   const payload = {
     fullname: req.body.fullname,
     username: req.body.username,
-    password: req.body.password,
+    password: await bcrypt.hash(req.body.password, salt),
   };
 
   // Save User in the database
@@ -73,17 +76,30 @@ exports.findOne = async (req, res) => {
     return;
   }
 
-  // Find a User
-  const payload = {
-    username: req.body.username,
-    password: req.body.password,
-  };
-
   // Find User in the database
   try {
-    const data = await User.findOne(payload);
+    const user = await User.findOne({ username: req.body.username });
+    const password_valid = await bcrypt.compare(req.body.password, user.password);
 
-    res.send(data);
+    if (password_valid) {
+      const accessToken = jwt.sign({ "id": user.id, "username": user.username, "fullname": user.fullname }, 'sM4rTR3c1P3');
+      delete user.password
+      
+      const {id, fullname, username} = user
+
+      res.status(200).json({
+        success: true,
+        message: 'Login Success',
+        data: {
+          id,
+          fullname,
+          username,
+          accessToken
+        }
+      });
+    } else {
+      res.status(400).json({ error: "Password Incorrect" });
+    }
   } catch (error) {
     res.status(500).send({
       message: error.message || "Some error occurred while finding the User.",

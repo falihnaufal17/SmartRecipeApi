@@ -1,13 +1,15 @@
+const { authorization } = require("../middleware/auth.js");
+
 module.exports = (app) => {
   const bookmark = require("../controllers/bookmark.js");
   
   var router = require("express").Router();
 
   // Create a new Bookmark
-  router.post("/add-bookmark", bookmark.create);
+  router.post("/add-bookmark", authorization, bookmark.create);
   
   // Retrieve all Bookmarks
-  router.get("/get-bookmark", bookmark.findAll);
+  router.get("/get-bookmark", authorization, bookmark.findAll);
 
   // Retrieve a single Bookmark with id
   router.get("/get-bookmark:id", bookmark.findOne);

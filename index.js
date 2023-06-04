@@ -1,5 +1,6 @@
 require("dotenv/config");
 const express = require("express");
+const db = require('./models')
 
 const app = express();
 
@@ -17,6 +18,11 @@ app.get("/", (req, res) => {
 require("./routes/user")(app);
 require("./routes/bookmark")(app);
 require("./routes/clarifai")(app);
+
+db.sequelize.sync({
+  force: false,
+  alter: true
+})
 
 // set port, listen for requests
 const PORT = process.env.PORT || 8080;
