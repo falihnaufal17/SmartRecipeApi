@@ -14,11 +14,12 @@ const storage = multer.diskStorage({
 })
 const upload = multer({ storage })
 const clarifai = require('../controllers/clarifai');
+const { authorization } = require('../middleware/auth');
 
 module.exports = (app) => {
 
   router.post('/detect', upload.single('image'), clarifai.detector)
-  router.get('/detail/:id', clarifai.detail)
+  router.get('/detail/:id', authorization, clarifai.detail)
 
   app.use("/api/clarifai", router);
 }

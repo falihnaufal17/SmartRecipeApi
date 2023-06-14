@@ -18,7 +18,7 @@ module.exports = (app) => {
   router.put("/edit-bookmark:id", bookmark.update);
 
   // Delete a Bookmark with id
-  router.delete("/delete-bookmark:id", bookmark.delete);
+  router.delete("/delete-bookmark/:id", authorization, bookmark.delete);
 
   // Delete all Bookmarks
   router.delete("/delete-bookmark", bookmark.deleteAll);

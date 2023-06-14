@@ -1,6 +1,9 @@
 const { default: axios } = require("axios");
 const { ClarifaiStub, grpc } = require("clarifai-nodejs-grpc");
 const fs = require("fs");
+const { getUserByToken } = require("../helpers/utils");
+const db = require("../models");
+const Bookmark = db.bookmarks;
 
 exports.detector = (req, res) => {
   const stub = ClarifaiStub.grpc();
@@ -64,19 +67,34 @@ exports.detector = (req, res) => {
 
 exports.detail = async (req, res) => {
   const {id} = req.params
+  const token = req.headers['authorization'].split(" ")[1];
+  const userByToken = await getUserByToken(token)
 
   try {
     const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const equipmentDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const instructionDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const bookmarkByUserId = await Bookmark.findAll({ where: {user_id: userByToken.id} })
+    let isBookmarked = false
+    let bookmarkId = null
+
+    bookmarkByUserId.forEach(item => {
+      if (item.recipe_id == id && item.user_id == userByToken.id) {
+        isBookmarked = true
+        bookmarkId = item.id
+      }
+    })
+
     const formattedResponse = {
       id: recipeDetail?.id,
       title: recipeDetail?.title,
       image: recipeDetail?.image,
       equipments: equipmentDetail?.equipment,
       ingredients: ingredientsDetail?.ingredients,
-      instructions: instructionDetail
+      instructions: instructionDetail,
+      isBookmarked,
+      bookmarkId
     }
 
     return res.status(200).send({
