@@ -78,7 +78,7 @@ exports.findOne = async (req, res) => {
 
   // Find User in the database
   try {
-    const user = await User.findOne({ username: req.body.username });
+    const user = await User.findOne({ where: { username: req.body.username }});
     const password_valid = await bcrypt.compare(req.body.password, user.password);
 
     if (password_valid) {

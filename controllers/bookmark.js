@@ -66,14 +66,9 @@ const formattedRow = (item) => {
 
 // Retrieve all Bookmarks/ find by title from the database
 exports.findAll = async (req, res) => {
-  const title = req.query.title;
   const token = req.headers['authorization'].split(" ")[1];
   const userByToken = await getUserByToken(token)
   const condition = {}
-
-  if (title) {
-    condition.title = { [Op.like]: `%${title}%` }
-  }
 
   condition.user_id = { [Op.eq]: userByToken.id }
 

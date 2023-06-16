@@ -6,7 +6,7 @@ module.exports = {
     try {
       const token = req.headers['authorization'].split(" ")[1];
       const decoded = jwt.verify(token, 'sM4rTR3c1P3');
-      const user = await db.users.findOne({username: decoded.username})
+      const user = await db.users.findOne({ where: { username: decoded.username }})
 
       if (user) {
         next();
