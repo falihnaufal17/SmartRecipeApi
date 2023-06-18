@@ -30,7 +30,7 @@ exports.create = async (req, res) => {
       recipe_id: formattedResponse.id,
       body: formattedResponse
     };
-    const existBookmark = await Bookmark.findOne({where: {recipe_id: formattedResponse.id}})
+    const existBookmark = await Bookmark.findOne({where: {recipe_id: formattedResponse.id, user_id: userByToken.id}})
 
     if (existBookmark) {
       return res.status(400).send({
