@@ -10,6 +10,8 @@ app.use(express.json());
 // parse requests of content-type - application/x-www-form-urlencoded
 app.use(express.urlencoded());
 
+app.use(express.static('public'))
+
 // simple route
 app.get("/", (req, res) => {
   res.json({ message: "Welcome to bezkoder application." });
@@ -18,6 +20,8 @@ app.get("/", (req, res) => {
 require("./routes/user")(app);
 require("./routes/bookmark")(app);
 require("./routes/clarifai")(app);
+require("./routes/recipe")(app);
+// require("./routes/image")(app);
 
 db.sequelize.sync({
   force: false,

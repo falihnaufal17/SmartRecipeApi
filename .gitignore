@@ -6,3 +6,9 @@
 /assets/images/*.png
 /assets/images/*.svg
 /assets/images/*.webp
+
+/public/recipe-images/*.jpg
+/public/recipe-images/*.jpeg
+/public/recipe-images/*.png
+/public/recipe-images/*.svg
+/public/recipe-images/*.webp
