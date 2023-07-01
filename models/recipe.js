@@ -12,6 +12,11 @@ module.exports = (sequelize, Sequelize) => {
       },
       ingredients: {
         type: Sequelize.STRING,
+        get() {
+          const ingredientsString = this.getDataValue('ingredients');
+          
+          return ingredientsString ? ingredientsString.split(';') : [];
+        }
       },
       thumbnail: {
         type: Sequelize.TEXT,

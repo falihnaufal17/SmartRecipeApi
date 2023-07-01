@@ -3,9 +3,11 @@ const { ClarifaiStub, grpc } = require("clarifai-nodejs-grpc");
 const fs = require("fs");
 const { getUserByToken } = require("../helpers/utils");
 const db = require("../models");
+const { Op } = require("sequelize");
 const Bookmark = db.bookmarks;
+const Recipe = db.recipes;
 
-exports.detector = (req, res) => {
+exports.detector = async (req, res) => {
   const stub = ClarifaiStub.grpc();
   const metadata = new grpc.Metadata();
   const imageBytes = fs.readFileSync(req.file.path);
@@ -25,7 +27,7 @@ exports.detector = (req, res) => {
       ]
     },
     metadata,
-    (err, response) => {
+    async (err, response) => {
       if (err) {
         throw new Error(err);
       }
@@ -38,35 +40,52 @@ exports.detector = (req, res) => {
       const ingredients = [];
 
       console.log("Predicted concepts:");
-      // console.log(output.data.regions);
+
       for (const region of output.data.regions) {
         ingredients.push(region.data.concepts[0].name);
         console.log(region.data.concepts[0].name);
       }
 
-      axios.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=3798ef43760f4a10982037daf9a35c40&ingredients=${ingredients.join(',')}&number=${100}`)
-        .then((spoonacularResponse) => {
-          const data = {
-            detectedIngredients: ingredients,
-            data: spoonacularResponse.data
-          };
-          console.log("response Spoon", spoonacularResponse.data)
-          return res.status(200).send({
-            message: 'Image food detected',
-            data
-          })
-        }).catch(spoonacularResponseErr => {
-          return res.status(500).send({
-            message: spoonacularResponseErr.response.data,
-            data: []
-          })
-        })
+      const detectedIngredients = ingredients.join(';')
+      const dataRecipe = await Recipe.findAll({
+        where: {
+          ingredients: {
+            [Op.or]: ingredients.map((ingredient) => ({
+              [Op.like]: `%${ingredient}%`,
+            }))
+          }
+        },
+      })
+
+      return res.status(200).json({
+        detectedIngredients,
+        message: 'Image food detected',
+        data: dataRecipe
+      })
+
+      // axios.get(`https://api.spoonacular.com/recipes/findByIngredients?apiKey=3798ef43760f4a10982037daf9a35c40&ingredients=${ingredients.join(',')}&number=${100}`)
+      //   .then((spoonacularResponse) => {
+      //     const data = {
+      //       detectedIngredients: ingredients,
+      //       data: spoonacularResponse.data
+      //     };
+      //     console.log("response Spoon", spoonacularResponse.data)
+      //     return res.status(200).send({
+      //       message: 'Image food detected',
+      //       data
+      //     })
+      //   }).catch(spoonacularResponseErr => {
+      //     return res.status(500).send({
+      //       message: spoonacularResponseErr.response.data,
+      //       data: []
+      //     })
+      //   })
     }
   );
 }
 
 exports.detail = async (req, res) => {
-  const {id} = req.params
+  const { id } = req.params
   const token = req.headers['authorization'].split(" ")[1];
   const userByToken = await getUserByToken(token)
 
@@ -75,7 +94,7 @@ exports.detail = async (req, res) => {
     const equipmentDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const instructionDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const bookmarkByUserId = await Bookmark.findAll({ where: {user_id: userByToken.id} })
+    const bookmarkByUserId = await Bookmark.findAll({ where: { user_id: userByToken.id } })
     let isBookmarked = false
     let bookmarkId = null
 
