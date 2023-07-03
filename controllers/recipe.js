@@ -2,7 +2,8 @@ const db = require('../models');
 const Validator = require('validatorjs');
 const Recipe = db.recipes;
 
-const host = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:3000' : 'https://smartrecipeapi.kevinpratamasinaga.my.id'
+// const host = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:3000' : 'https://smartrecipeapi.kevinpratamasinaga.my.id'
+const host = 'https://smartrecipeapi.kevinpratamasinaga.my.id'
 
 exports.create = async (req, res) => {
   const {title, ingredients, video_url} = req.body
