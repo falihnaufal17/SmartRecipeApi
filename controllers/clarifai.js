@@ -1,7 +1,7 @@
 const { default: axios } = require("axios");
 const { ClarifaiStub, grpc } = require("clarifai-nodejs-grpc");
 const fs = require("fs");
-const { getUserByToken } = require("../helpers/utils");
+const { getUserByToken, quickStart } = require("../helpers/utils");
 const db = require("../models");
 const { Op } = require("sequelize");
 const Bookmark = db.bookmarks;
@@ -43,7 +43,7 @@ exports.detector = async (req, res) => {
 
       for (const region of output.data.regions) {
         ingredients.push(region.data.concepts[0].name);
-        console.log(region.data.concepts[0].name);
+        console.log(await quickStart(region.data.concepts[0].name));
       }
 
       const detectedIngredients = ingredients.join(';')
