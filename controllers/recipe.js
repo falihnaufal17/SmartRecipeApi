@@ -6,17 +6,21 @@ const Recipe = db.recipes;
 const host = 'https://smartrecipeapi.kevinpratamasinaga.my.id'
 
 exports.create = async (req, res) => {
-  const {title, ingredients, video_url} = req.body
+  const {title, ingredients, equipments, instructions, video_url} = req.body
   const {file} = req
   const rules = {
     title: 'required',
     ingredients: 'required',
+    equipments: 'required',
+    instructions: 'required',
     thumbnail: 'required',
     video_url: 'required'
   }
   const payload = {
     title,
     ingredients,
+    equipments,
+    instructions,
     video_url,
     thumbnail: `${host}/recipe-images/${file.filename}`
   }
@@ -49,12 +53,14 @@ exports.create = async (req, res) => {
 }
 
 exports.update = async (req, res) => {
-  const {title, ingredients, video_url} = req.body
+  const {title, ingredients, equipments, instructions, video_url} = req.body
   const {file} = req
   const {id} = req.params //recipe id
   const rules = {
     title: 'required',
     ingredients: 'required',
+    equipments: 'required',
+    instructions: 'required',
     thumbnail: 'required|string',
     video_url: 'required',
     id: 'numeric'
@@ -63,6 +69,8 @@ exports.update = async (req, res) => {
   const payload = {
     title,
     ingredients,
+    equipments,
+    instructions,
     video_url
   }
   

@@ -18,6 +18,22 @@ module.exports = (sequelize, Sequelize) => {
           return ingredientsString ? ingredientsString.split(';') : [];
         }
       },
+      equipments: {
+        type: Sequelize.STRING,
+        get() {
+          const equipmentsString = this.getDataValue('equipments');
+
+          return equipmentsString ? equipmentsString.split(';') : [];
+        }
+      },
+      instructions: {
+        type: Sequelize.STRING,
+        get() {
+          const instructionsString = this.getDataValue('instructions');
+
+          return instructionsString ? instructionsString.split(';') : [];
+        }
+      },
       thumbnail: {
         type: Sequelize.TEXT,
       },
