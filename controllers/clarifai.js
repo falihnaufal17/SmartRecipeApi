@@ -42,8 +42,7 @@ exports.detector = async (req, res) => {
       console.log("Predicted concepts:");
 
       for (const region of output.data.regions) {
-        ingredients.push(region.data.concepts[0].name);
-        console.log(await quickStart(region.data.concepts[0].name));
+        ingredients.push(await quickStart(region.data.concepts[0].name));
       }
 
       const detectedIngredients = ingredients.join(';')
