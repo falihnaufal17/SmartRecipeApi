@@ -89,10 +89,14 @@ exports.detail = async (req, res) => {
   const userByToken = await getUserByToken(token)
 
   try {
-    const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const equipmentsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const instructionsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const equipmentsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const instructionsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+
+    const recipe = await Recipe.findOne({where: {
+      id
+    }})
     const bookmarkByUserId = await Bookmark.findAll({ where: { user_id: userByToken.id } })
     let isBookmarked = false
     let bookmarkId = null
@@ -105,14 +109,15 @@ exports.detail = async (req, res) => {
     })
 
     const formattedResponse = {
-      id: recipeDetail?.id,
-      title: recipeDetail?.title,
-      image: recipeDetail?.image,
-      equipments: equipmentsDetail?.equipment,
-      ingredients: ingredientsDetail?.ingredients,
-      instructions: instructionsDetail,
+      id: recipe.id,
+      title: recipe.title,
+      thumbnail: recipe.thumbnail,
+      equipments: recipe.equipments,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
       isBookmarked,
-      bookmarkId
+      bookmarkId,
+      videoUrl: recipe.video_url
     }
 
     return res.status(200).send({
@@ -120,8 +125,9 @@ exports.detail = async (req, res) => {
       data: formattedResponse
     })
   } catch (e) {
+    console.log(e)
     return res.status(500).send({
-      message: e.response.data,
+      message: e,
       data: null
     })
   }
