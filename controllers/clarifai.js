@@ -39,7 +39,7 @@ exports.detector = async (req, res) => {
       const output = response.outputs[0];
       const ingredients = [];
 
-      console.log("Predicted concepts:");
+      console.log("Bahan makanan yang terdeteksi:");
 
       for (const region of output.data.regions) {
         ingredients.push(await quickStart(region.data.concepts[0].name));
@@ -58,7 +58,7 @@ exports.detector = async (req, res) => {
 
       return res.status(200).json({
         detectedIngredients,
-        message: 'Image food detected',
+        message: 'Bahan makanan terdeteksi!',
         data: dataRecipe
       })
 
@@ -90,9 +90,9 @@ exports.detail = async (req, res) => {
 
   try {
     const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const equipmentDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const equipmentsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const instructionDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const instructionsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${id}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const bookmarkByUserId = await Bookmark.findAll({ where: { user_id: userByToken.id } })
     let isBookmarked = false
     let bookmarkId = null
@@ -108,15 +108,15 @@ exports.detail = async (req, res) => {
       id: recipeDetail?.id,
       title: recipeDetail?.title,
       image: recipeDetail?.image,
-      equipments: equipmentDetail?.equipment,
+      equipments: equipmentsDetail?.equipment,
       ingredients: ingredientsDetail?.ingredients,
-      instructions: instructionDetail,
+      instructions: instructionsDetail,
       isBookmarked,
       bookmarkId
     }
 
     return res.status(200).send({
-      message: 'Success get detail recipe',
+      message: 'Berhasil mendapatkan detail resep',
       data: formattedResponse
     })
   } catch (e) {

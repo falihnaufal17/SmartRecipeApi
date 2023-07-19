@@ -22,40 +22,40 @@ exports.create = async (req, res) => {
 
   if (!req.body.username || req.body.username.length === 0) {
     res.status(400).send({
-      message: "Username tidak boleh kosong!",
+      message: "Nama pengguna tidak boleh kosong!",
     });
     return;
   }
 
   if (!req.body.password || req.body.password.length === 0) {
     res.status(400).send({
-      message: "Password tidak boleh kosong!",
+      message: "Kata sandi tidak boleh kosong!",
     });
     return;
   }
 
   if (existUser) {
     res.status(400).send({
-      message: "Username sudah terdaftar!",
+      message: "Nama pengguna sudah terdaftar!",
     });
     return;
   }
 
-  // Create a User
+  // Create account
   const payload = {
     fullname: req.body.fullname,
     username: req.body.username,
     password: await bcrypt.hash(req.body.password, salt),
   };
 
-  // Save User in the database
+  // Save account in the database
   try {
     const data = await User.create(payload);
 
     res.send(data);
   } catch (error) {
     res.status(500).send({
-      message: error.message || "Some error occurred while creating the User.",
+      message: error.message || "Terjadi kesalahan saat membuat akun",
     });
   }
 };
@@ -64,14 +64,14 @@ exports.create = async (req, res) => {
 exports.findOne = async (req, res) => {
   if (!req.body.username || req.body.username.length === 0) {
     res.status(400).send({
-      message: "Username tidak boleh kosong!",
+      message: "Nama pengguna tidak boleh kosong!",
     });
     return;
   }
 
   if (!req.body.password || req.body.password.length === 0) {
     res.status(400).send({
-      message: "Password tidak boleh kosong!",
+      message: "Kata sandi tidak boleh kosong!",
     });
     return;
   }
@@ -89,7 +89,7 @@ exports.findOne = async (req, res) => {
 
       res.status(200).json({
         success: true,
-        message: 'Login Success',
+        message: 'Berhasil login!',
         data: {
           id,
           fullname,
@@ -98,11 +98,11 @@ exports.findOne = async (req, res) => {
         }
       });
     } else {
-      res.status(400).json({ error: "Password Incorrect" });
+      res.status(400).json({ error: "Kata sandi salah!" });
     }
   } catch (error) {
     res.status(500).send({
-      message: error.message || "Some error occurred while finding the User.",
+      message: error.message || "Terjadi kesalahan saat mencari akun",
     });
   }
 };
@@ -117,7 +117,7 @@ exports.delete = async (req, res) => {
     res.send(data);
   } catch (error) {
     res.status(500).send({
-      message: error.message || "Some error occurred while deleting the User.",
+      message: error.message || "Terjadi kesalahan saat menghapus akun",
     });
   }
 };

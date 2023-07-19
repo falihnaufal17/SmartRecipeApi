@@ -13,16 +13,16 @@ exports.create = async (req, res) => {
   // Save Bookmark in the database
   try {
     const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const equipmentDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const equipmentsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const instructionDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    const instructionsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     const formattedResponse = {
       "id": recipeDetail?.id,
       "title": recipeDetail?.title,
       "image": recipeDetail?.image,
-      "equipments": equipmentDetail?.equipment,
+      "equipments": equipmentsDetail?.equipment,
       "ingredients": ingredientsDetail?.ingredients,
-      "instructions": instructionDetail
+      "instructions": instructionsDetail
     }
     const payload = {
       user_id: userByToken.id,
@@ -35,7 +35,7 @@ exports.create = async (req, res) => {
     if (existBookmark) {
       return res.status(400).send({
         success: false,
-        message: 'Data bookmark sudah tersimpan',
+        message: 'Gagal menyimpan, resep masakan sudah tersimpan!',
         data: null
       });
     }
@@ -44,14 +44,14 @@ exports.create = async (req, res) => {
 
     return res.status(201).send({
       success: true,
-      message: 'Add to bookmark successfully',
+      message: 'Berhasil menyimpan riwayat resep masakan!',
       data
     });
   } catch (error) {
     return res.status(500).send({
       success: false,
       message:
-        error.message || "Some error occurred while creating the Bookmark.",
+        error.message || "Terjadi kesalahan saat menyimpan resep masakan",
       data: null
     });
   }
@@ -84,7 +84,7 @@ exports.findAll = async (req, res) => {
 
     return res.status(200).send({
       success: true,
-      message: 'Success get all bookmarks',
+      message: 'Berhasil menampilkan seluruh riwayat resep masakan!',
       data
     })
   } catch (error) {
@@ -107,13 +107,13 @@ exports.findOne = (req, res) => {
         res.send(data);
       } else {
         res.status(404).send({
-          message: `Cannot find Bookmark with id=${id}.`
+          message: `Tidak dapat mencari riwayat resep masakan dengan id=${id}.`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error retrieving Bookmark with id=" + id
+        message: "Terjadi kesalahan saat mencari riwayat resep masakan dengan id=" + id
       });
     });
 };
@@ -128,17 +128,17 @@ exports.update = (req, res) => {
     .then(num => {
       if (num == 1) {
         res.send({
-          message: "Bookmark was updated successfully."
+          message: "Berhasil mengubah riwayat resep masakan!"
         });
       } else {
         res.send({
-          message: `Cannot update Bookmark with id=${id}. Maybe Bookmark was not found or req.body is empty!`
+          message: `Tidak dapat mengubah riwayat resep masakan dengan id=${id}. Mungkin riwayat resep masakan tidak ditemukan atau req.body kosong!`
         });
       }
     })
     .catch(err => {
       res.status(500).send({
-        message: "Error updating Bookmark with id=" + id
+        message: "Terjadi kesalahan saat mengubah riwayat resep masakan dengan id=" + id
       });
     });
 };
@@ -154,13 +154,13 @@ exports.delete = (req, res) => {
       if (num == 1) {
         res.send({
           success: true,
-          message: 'Bookmark was deleted successfully',
+          message: 'Berhasil menghapus riwayat resep masakan!',
           data: null
         });
       } else {
         res.send({
           success: true,
-          message: `Cannot delete Bookmark with id=${id}. Maybe Bookmark was not found!`,
+          message: `Tidak dapat menghapus riwayat resep masakan dengan id=${id}. Mungkin riwayat resep masakan tidak ditemukan!`,
           data: null
         });
       }
@@ -168,7 +168,7 @@ exports.delete = (req, res) => {
     .catch(err => {
       res.status(500).send({
         success: true,
-        message: "Could not delete Bookmark with id=" + id,
+        message: "Terjadi kesalahan saat menghapus riwayat resep masakan dengan id=" + id,
         data: null
       });
     });
@@ -181,12 +181,12 @@ exports.deleteAll = (req, res) => {
     truncate: false
   })
     .then(nums => {
-      res.send({ message: `${nums} Bookmarks were deleted successfully!` });
+      res.send({ message: `${nums} Berhasil menghapus seluruh riwayat resep masakan!` });
     })
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while removing all Bookmarks."
+          err.message || "Terjadi kesalahan saat menghapus seluruh riwayat resep masakan"
       });
     });
 };

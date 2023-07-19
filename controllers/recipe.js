@@ -40,7 +40,7 @@ exports.create = async (req, res) => {
 
     return res.status(201).json({
       'success': true,
-      'message': 'Berhasil menambahkan resep',
+      'message': 'Berhasil menambahkan resep masakan!',
       'data': payload
     })
   } catch (e) {
@@ -98,7 +98,7 @@ exports.update = async (req, res) => {
 
     return res.status(200).json({
       'success': true,
-      'message': 'Berhasil mengubah resep',
+      'message': 'Berhasil mengubah resep masakan!',
       'data': payload
     })
   } catch (e) {
