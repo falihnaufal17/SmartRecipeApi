@@ -12,7 +12,6 @@ module.exports = (sequelize, Sequelize) => {
       },
       recipe_id: {
         type: Sequelize.INTEGER,
-        after: 'user_id'
       },
       title: {
         type: Sequelize.STRING,
