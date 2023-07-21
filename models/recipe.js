@@ -11,7 +11,7 @@ module.exports = (sequelize, Sequelize) => {
         type: Sequelize.STRING,
       },
       ingredients: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         get() {
           const ingredientsString = this.getDataValue('ingredients');
           
@@ -19,7 +19,7 @@ module.exports = (sequelize, Sequelize) => {
         }
       },
       equipments: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         get() {
           const equipmentsString = this.getDataValue('equipments');
 
@@ -27,7 +27,7 @@ module.exports = (sequelize, Sequelize) => {
         }
       },
       instructions: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         get() {
           const instructionsString = this.getDataValue('instructions');
 
