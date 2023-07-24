@@ -3,9 +3,11 @@ const { getUserByToken } = require("../helpers/utils");
 const db = require("../models");
 const Bookmark = db.bookmarks;
 const Op = db.Sequelize.Op;
+const Recipe = db.recipes;
 
 // Create and Save a new Bookmark
 exports.create = async (req, res) => {
+  const { id } = req.params
   const token = req.headers['authorization'].split(" ")[1];
   const userByToken = await getUserByToken(token)
   // const {recipeId} = req.body
