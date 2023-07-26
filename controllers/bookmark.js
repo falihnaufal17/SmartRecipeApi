@@ -3,6 +3,7 @@ const { getUserByToken } = require("../helpers/utils");
 const db = require("../models");
 const Bookmark = db.bookmarks;
 const Op = db.Sequelize.Op;
+const Recipe = db.recipes;
 
 // Create and Save a new Bookmark
 exports.create = async (req, res) => {
@@ -12,17 +13,23 @@ exports.create = async (req, res) => {
 
   // Save Bookmark in the database
   try {
-    const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const equipmentsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-    const instructionsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const recipeDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const equipmentsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+    // const instructionsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
+
+    const recipe = await Recipe.findOne({where: {
+      id: recipeId
+    }})
+    
     const formattedResponse = {
-      "id": recipeDetail?.id,
-      "title": recipeDetail?.title,
-      "image": recipeDetail?.image,
-      "equipments": equipmentsDetail?.equipment,
-      "ingredients": ingredientsDetail?.ingredients,
-      "instructions": instructionsDetail
+      id: recipe.id,
+      title: recipe.title,
+      thumbnail: recipe.thumbnail,
+      equipments: recipe.equipments,
+      ingredients: recipe.ingredients,
+      instructions: recipe.instructions,
+      videoUrl: recipe.video_url
     }
     const payload = {
       user_id: userByToken.id,

@@ -79,11 +79,16 @@ exports.findOne = async (req, res) => {
   // Find User in the database
   try {
     const user = await User.findOne({ where: { username: req.body.username }});
-    const password_valid = await bcrypt.compare(req.body.password, user.password);
 
+    if (!user) {
+      return res.status(400).json({message: "Akun tidak terdaftar"})
+    }
+
+    const password_valid = await bcrypt.compare(req.body.password, user?.password);
+    
     if (password_valid) {
-      const accessToken = jwt.sign({ "id": user.id, "username": user.username, "fullname": user.fullname }, 'sM4rTR3c1P3');
-      delete user.password
+      const accessToken = jwt.sign({ "id": user?.id, "username": user?.username, "fullname": user?.fullname }, 'sM4rTR3c1P3');
+      delete user?.password
       
       const {id, fullname, username} = user
 
@@ -98,9 +103,10 @@ exports.findOne = async (req, res) => {
         }
       });
     } else {
-      res.status(400).json({ error: "Kata sandi salah!" });
+      res.status(400).json({ message:  "Password tidak sesuai" });
     }
   } catch (error) {
+    console.log(error.message)
     res.status(500).send({
       message: error.message || "Terjadi kesalahan saat mencari akun",
     });
