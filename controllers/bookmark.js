@@ -7,9 +7,10 @@ const Recipe = db.recipes;
 
 // Create and Save a new Bookmark
 exports.create = async (req, res) => {
+  const { id } = req.params
   const token = req.headers['authorization'].split(" ")[1];
   const userByToken = await getUserByToken(token)
-  const {recipeId} = req.body
+  // const {recipeId} = req.body
 
   // Save Bookmark in the database
   try {
@@ -17,11 +18,9 @@ exports.create = async (req, res) => {
     // const equipmentsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/equipmentWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     // const ingredientsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/ingredientWidget.json?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
     // const instructionsDetail = (await axios.get(`https://api.spoonacular.com/recipes/${recipeId}/analyzedInstructions?apiKey=3798ef43760f4a10982037daf9a35c40`)).data
-
     const recipe = await Recipe.findOne({where: {
-      id: recipeId
+      id
     }})
-    
     const formattedResponse = {
       id: recipe.id,
       title: recipe.title,
