@@ -47,6 +47,15 @@ exports.detector = async (req, res) => {
       }
 
       const detectedIngredients = ingredients.join(';')
+
+      if (ingredients.length === 0) {
+        return res.status(200).json({
+          detectedIngredients,
+          message: 'Tidak ada bahan makanan yang terdeteksi!',
+          data: []
+        })
+      }
+
       const dataRecipe = await Recipe.findAll({
         where: {
           ingredients: {
