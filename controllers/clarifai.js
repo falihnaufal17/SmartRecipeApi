@@ -29,6 +29,7 @@ exports.detector = async (req, res) => {
     metadata,
     async (err, response) => {
       if (err) {
+        console.log(err)
         throw new Error(err);
       }
 
@@ -50,7 +51,7 @@ exports.detector = async (req, res) => {
         where: {
           ingredients: {
             [Op.or]: ingredients.map((ingredient) => ({
-              [Op.like]: `%${ingredient}%`,
+              [Op.like]: `${ingredient}%`,
             }))
           }
         },
