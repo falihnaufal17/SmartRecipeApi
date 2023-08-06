@@ -48,6 +48,11 @@ exports.detector = async (req, res) => {
 
       const detectedIngredients = ingredients.join(';')
 
+      const inputArray = detectedIngredients
+        .toLowerCase()
+        .split(';')
+        .map((ingredient) => ingredient.trim().replace(/\s+/g, '-'));
+
       if (ingredients.length === 0) {
         return res.status(200).json({
           detectedIngredients,
@@ -59,9 +64,7 @@ exports.detector = async (req, res) => {
       const dataRecipe = await Recipe.findAll({
         where: {
           ingredients: {
-            [Op.or]: ingredients.map((ingredient) => ({
-              [Op.like]: `${ingredient}%`,
-            }))
+            [Op.regexp]: inputArray.join('|'),
           }
         },
       })
